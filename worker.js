@@ -1,8 +1,9 @@
 /**
  * Cloudflare Worker — CORS Proxy for Log Downloader
- * ===================================================
- * Uses ?url=<encoded-target> instead of /proxy/<target>
- * to avoid Cloudflare path-stripping/re-encoding issues.
+ *
+ * Every request uses ?url=<encoded-target>
+ * If no ?url= is present, returns a health-check 200 ("ok").
+ * This means GET https://yourworker.workers.dev/ → 200 "ok" (used for ping test)
  *
  * Deploy:
  *   1. workers.cloudflare.com → Create a Service
@@ -31,40 +32,33 @@ export default {
     }
 
     const incoming = new URL(request.url);
+    const targetStr = incoming.searchParams.get("url");
 
-    // Health-check ping: GET /ping → 200 OK
-    if (incoming.pathname === "/ping") {
+    // No ?url= param → health check ping
+    if (!targetStr) {
       return new Response("ok", { status: 200, headers: CORS });
     }
 
-    // Target is passed as ?url=<fully-encoded URL>
-    const targetStr = incoming.searchParams.get("url");
-    if (!targetStr) {
-      return new Response(
-        "Missing ?url= parameter. Usage: /proxy?url=https://files-io-prod...",
-        { status: 400, headers: CORS }
-      );
-    }
-
+    // Parse and validate target
     let targetUrl;
     try {
       targetUrl = new URL(targetStr);
     } catch {
-      return new Response("Invalid URL in ?url= : " + targetStr, {
+      return new Response("Invalid URL: " + targetStr, {
         status: 400, headers: CORS,
       });
     }
 
-    // Security: only proxy allowed hostnames
     if (!ALLOWED_HOSTNAMES.includes(targetUrl.hostname)) {
       return new Response("Host not allowed: " + targetUrl.hostname, {
         status: 403, headers: CORS,
       });
     }
 
+    // Proxy the request
     try {
       const upstream = await fetch(targetUrl.toString(), {
-        method: "GET",
+        method:  "GET",
         headers: { "Accept-Encoding": "identity" },
       });
 
