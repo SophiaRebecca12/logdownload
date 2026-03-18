@@ -215,16 +215,19 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
       <!-- tenant -->
       <div class="cascade-step">
         <label>tenant <span id="tenant-hint"></span></label>
+        <input class="cascade-select" id="tenant-input" placeholder="type tenant name…"
+          style="margin-bottom:4px"
+          oninput="document.getElementById('sel-tenant').innerHTML='<option value=\''+this.value+'\'>'+this.value+'</option>';document.getElementById('sel-tenant').value=this.value;document.getElementById('sel-tenant').disabled=!this.value.trim()"/>
         <select class="cascade-select" id="sel-tenant" disabled onchange="onTenantChange()">
           <option value="">— select tenant —</option>
         </select>
-        <button onclick="loadTenants()" style="margin-top:4px;font-family:var(--mono);
+        <button onclick="onTenantChange()" style="margin-top:4px;font-family:var(--mono);
           font-size:11px;padding:5px;border:.5px solid var(--border-md);
           border-radius:var(--r);background:transparent;color:var(--text2);
           cursor:pointer;width:100%;transition:background .12s"
           onmouseover="this.style.background='var(--surface2)'"
           onmouseout="this.style.background='transparent'">
-          ↓ load tenants
+          ↓ load stores
         </button>
       </div>
 
@@ -334,7 +337,8 @@ function getProxy(){ return (document.getElementById("proxy-url").value||"").tri
 function proxied(url){
   const p=getProxy();
   if(!p) throw new Error("No proxy URL set — paste your Cloudflare Worker URL first");
-  return `${p}?url=${encodeURIComponent(url)}`;
+  // Decode first to avoid double-encoding already-encoded characters (e.g. %20 → %2520)
+  return `${p}?url=${encodeURIComponent(decodeURI(url))}`;
 }
 function saveProxy(){ localStorage.setItem("logdl_proxy",getProxy()); }
 function setProxyStatus(msg,cls){
