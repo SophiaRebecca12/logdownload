@@ -331,7 +331,11 @@ let stats         = {files:0,extracted:0,skipped:0,errors:0};
 
 // ── Proxy ─────────────────────────────────────────────────────────────────────
 function getProxy(){ return (document.getElementById("proxy-url").value||"").trim().replace(/\/+$/,""); }
-function proxied(url){ const p=getProxy(); return p ? `${p}?url=${encodeURIComponent(url)}` : url; }
+function proxied(url){
+  const p=getProxy();
+  if(!p) throw new Error("No proxy URL set — paste your Cloudflare Worker URL first");
+  return `${p}?url=${encodeURIComponent(url)}`;
+}
 function saveProxy(){ localStorage.setItem("logdl_proxy",getProxy()); }
 function setProxyStatus(msg,cls){
   const el=document.getElementById("proxy-status");
@@ -341,10 +345,20 @@ async function testProxy(){
   const p=getProxy();
   if(!p){ setProxyStatus("paste your worker URL above","warn"); return; }
   setProxyStatus("testing…","warn");
-  const root=document.getElementById("root-url").value.replace(/\/+$/,"")+"/";
   try{
-    const r=await fetch(proxied(root));
-    setProxyStatus(`proxy connected (HTTP ${r.status} from server)`,"ok");
+    // Hit the worker root with NO ?url param — worker returns "proxy ok" as health check
+    const r=await fetch(p);
+    const text=await r.text();
+    if(r.ok && text.trim()==="proxy ok"){
+      setProxyStatus("proxy connected ✓","ok");
+    } else if(r.ok && (text.includes("<html") || text.includes("<!DOCTYPE"))){
+      // The URL is returning an HTML page — user probably pasted their GitHub Pages URL
+      setProxyStatus("wrong URL — this looks like a webpage, not a Worker. Paste your workers.dev URL","err");
+    } else if(r.ok){
+      setProxyStatus(`worker reachable (unexpected body: "${text.slice(0,40)}")`, "warn");
+    } else {
+      setProxyStatus(`worker returned HTTP ${r.status}`,"err");
+    }
   } catch(e){
     setProxyStatus("cannot reach worker — check URL","err");
   }
@@ -364,17 +378,42 @@ function setEnv(e){
  * @param {string} url  - full URL to fetch
  * @param {function} filter - (href:string)=>boolean to keep only relevant entries
  */
-async function listDir(url, filter){
+async function listDir(url, filter, debug=false){
   const resp = await fetch(proxied(url));
   if(!resp.ok) throw new Error(`HTTP ${resp.status} from ${url}`);
   const html = await resp.text();
+
+  // Guard: detect when the proxy URL is wrong and returning the app's own page
+  if(html.includes("Log Downloader") && html.includes("cloudflare proxy")){
+    throw new Error(
+      "Worker returned the app's own HTML — Worker URL is wrong. "+
+      "It must be https://something.workers.dev, not a GitHub Pages URL."
+    );
+  }
+
+  if(debug){
+    addLog(`· response: ${html.length} chars, HTTP ${resp.status}`,"plain");
+    addLog(`· first 300: ${html.slice(0,300).replace(/\s+/g," ")}`,"plain");
+  }
+
   const doc  = new DOMParser().parseFromString(html,"text/html");
+  const allLinks = [...doc.querySelectorAll("a[href]")];
+
+  if(debug){
+    addLog(`· total <a href> found: ${allLinks.length}`,"plain");
+    allLinks.slice(0,20).forEach(a=>addLog(`  · href="${a.getAttribute("href")}"`, "plain"));
+  }
+
   const results = [];
-  doc.querySelectorAll("a[href]").forEach(a=>{
-    const raw  = a.getAttribute("href");
-    const name = raw.replace(/\/+$/,"").split("/").pop();
+  allLinks.forEach(a=>{
+    const raw   = a.getAttribute("href");
+    const clean = raw.split("?")[0].replace(/\/+$/,"");
+    const parts = clean.split("/").filter(Boolean);
+    const name  = parts.length ? parts[parts.length-1] : "";
+    if(debug && name) addLog(`  · name="${name}" → ${filter(name)?"KEEP":"skip"}`,"plain");
     if(name && name !== ".." && filter(name)) results.push(name);
   });
+
   return [...new Set(results)].sort();
 }
 
@@ -419,7 +458,17 @@ async function loadTenants(){
   try{
     // Tenants are top-level folders under /{server}/
     const url      = `${getRoot()}/${getServer()}/`;
-    const tenants  = await listDir(url, n => n.length > 0 && !n.includes("."));
+    const proxiedUrl = proxied(url);
+    addLog(`fetching via proxy: ${proxiedUrl.slice(0,120)}…`,"plain");
+    // debug=true logs every href so we can see what the server returns
+    const tenants  = await listDir(url, n => {
+      // Accept any folder name that is not a known non-tenant entry
+      // Exclude: parent refs, file extensions, processserver names
+      if(!n || n===".." || n===".") return false;
+      if(/^processserver-\d+$/i.test(n)) return false;
+      if(n.includes(".") && !n.includes("-")) return false; // likely a file
+      return true;
+    }, true);
     populate("sel-tenant", tenants, "select tenant");
     setHint("tenant-hint", `(${tenants.length})`);
     addLog(`found ${tenants.length} tenant(s)`,"ok");
@@ -771,6 +820,14 @@ async function startRun(){
       }
 
       const html=await listResp.text();
+
+      // Guard: same wrong-URL detection
+      if(html.includes("Log Downloader") && html.includes("cloudflare proxy")){
+        addLog("ERROR: worker is returning the app's own HTML — check your Worker URL in the proxy field","err");
+        document.getElementById("run-btn").disabled=false;
+        return;
+      }
+
       const doc=new DOMParser().parseFromString(html,"text/html");
       const links=[...doc.querySelectorAll("a[href]")];
       addLog(`  ${links.length} link(s) on ${server}`,"plain");
