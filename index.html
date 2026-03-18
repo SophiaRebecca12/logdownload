@@ -81,7 +81,6 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 .uuid-item input[type=checkbox]{accent-color:var(--accent);flex-shrink:0}
 .uuid-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .uuid-status{font-size:10px;color:var(--text3);margin-top:4px}
-/* proxy config */
 .proxy-row{display:flex;flex-direction:column;gap:4px}
 .proxy-row label{font-size:11px;color:var(--text2)}
 .proxy-input-wrap{display:flex;gap:5px}
@@ -89,17 +88,19 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
   border:.5px solid var(--border-md);border-radius:var(--r);
   background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s}
 .proxy-input-wrap input:focus{border-color:var(--accent)}
+.proxy-test-btn{font-family:var(--mono);font-size:11px;padding:5px 10px;
+  border:.5px solid var(--border-md);border-radius:var(--r);
+  background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s}
+.proxy-test-btn:hover{background:var(--surface2)}
 .proxy-status{font-size:10px;margin-top:3px}
 .proxy-status.ok{color:var(--ok-fg)}
 .proxy-status.err{color:var(--err-fg)}
 .proxy-status.warn{color:var(--warn-fg)}
-/* run */
 .run-btn{width:100%;padding:10px;border-radius:var(--r);border:none;
   background:var(--text);color:var(--bg);font-family:var(--mono);font-size:12px;
   font-weight:500;cursor:pointer;letter-spacing:.05em;transition:opacity .15s;margin-top:auto}
 .run-btn:hover{opacity:.82}
 .run-btn:disabled{opacity:.35;cursor:not-allowed}
-/* main */
 .card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:1.1rem}
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stat{background:var(--surface2);border-radius:var(--r);padding:11px 13px}
@@ -109,7 +110,6 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 .prog-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:5px}
 .prog-track{height:2px;background:var(--border);border-radius:1px;overflow:hidden}
 .prog-fill{height:100%;background:var(--accent);border-radius:1px;transition:width .3s ease;width:0%}
-/* output files */
 .dl-section{margin-top:14px;display:none}
 .dl-list{display:flex;flex-direction:column;gap:6px}
 .dl-item{display:flex;align-items:center;gap:8px;background:var(--surface2);
@@ -124,14 +124,12 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
   border:.5px solid var(--border-md);background:transparent;font-family:var(--mono);
   font-size:11px;color:var(--text);cursor:pointer;transition:background .12s}
 .dl-all-btn:hover{background:var(--surface2)}
-/* log */
 .log-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
 .log-clear{font-size:11px;font-family:var(--mono);background:none;border:none;
   color:var(--text3);cursor:pointer}
 .log-clear:hover{color:var(--text)}
 .log{background:var(--surface2);border:.5px solid var(--border);border-radius:var(--r);
-  padding:10px 12px;height:300px;overflow-y:auto;
-  font-size:11.5px;font-family:var(--mono);line-height:1.85}
+  padding:10px 12px;height:300px;overflow-y:auto;font-size:11.5px;font-family:var(--mono);line-height:1.85}
 .ll{display:flex;gap:9px}
 .ts{color:var(--text3);flex-shrink:0;font-size:10px;padding-top:1px}
 .ll.ok  .lm{color:var(--ok-fg)}
@@ -156,14 +154,14 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 <aside class="sidebar">
   <div class="app-name">log downloader <em>/ itemoptix</em></div>
 
-  <!-- proxy config — the only setup step -->
+  <!-- proxy -->
   <div>
     <div class="blk-label">cloudflare proxy</div>
     <div class="proxy-row">
       <label>worker url</label>
       <div class="proxy-input-wrap">
-        <input id="proxy-url" placeholder="https://log-proxy.yourname.workers.dev"
-               oninput="onProxyInput()" onblur="testProxy()"/>
+        <input id="proxy-url" placeholder="https://xxx.workers.dev" oninput="onProxyInput()"/>
+        <button class="proxy-test-btn" onclick="testProxy()">test</button>
       </div>
       <div class="proxy-status warn" id="proxy-status">paste your worker URL above</div>
     </div>
@@ -219,7 +217,6 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 
 <!-- ══════════ MAIN ══════════ -->
 <main class="main">
-
   <div class="card">
     <div class="blk-label">summary</div>
     <div class="stat-row">
@@ -235,7 +232,6 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
       </div>
       <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
     </div>
-
     <div class="dl-section" id="dl-section">
       <div class="blk-label" style="margin-top:14px">output files</div>
       <div class="dl-list" id="dl-list"></div>
@@ -250,13 +246,12 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
     </div>
     <div class="log" id="log"></div>
   </div>
-
 </main>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
-// ─── Constants ────────────────────────────────────────────────────────────────
+// ─── Config ───────────────────────────────────────────────────────────────────
 const ENVS = {
   prod:    "https://files-io-prod.eus1-n.itemoptix.com/",
   preprod: "https://files-io-preprod.eus1-n.itemoptix.com/",
@@ -274,42 +269,39 @@ let dates         = [];
 let outputFiles   = [];
 let stats         = {files:0,extracted:0,skipped:0,errors:0};
 
-// ─── Proxy ───────────────────────────────────────────────────────────────────
+// ─── Proxy ────────────────────────────────────────────────────────────────────
 function getProxy(){
   return (document.getElementById("proxy-url").value||"").trim().replace(/\/+$/,"");
 }
 
-/** Wrap any target URL through the Cloudflare Worker proxy */
+/**
+ * Wrap a target URL through the Cloudflare Worker.
+ * Uses ?url=<encoded> so Cloudflare never mangles the path.
+ */
 function proxied(targetUrl){
   const p = getProxy();
-  if(!p) return targetUrl;   // no proxy set — try direct (will CORS-fail cross-origin)
-  return `${p}/proxy/${targetUrl}`;
+  if(!p) return targetUrl;
+  return `${p}?url=${encodeURIComponent(targetUrl)}`;
 }
 
 function onProxyInput(){
-  document.getElementById("proxy-status").textContent = "…";
-  document.getElementById("proxy-status").className   = "proxy-status warn";
+  setProxyStatus("…","warn");
 }
 
 async function testProxy(){
   const p = getProxy();
-  if(!p){
-    setProxyStatus("paste your worker URL above","warn");
-    return;
-  }
-  // Ping a known safe URL through the proxy
-  const testTarget = "https://files-io-preprod.eus1-n.itemoptix.com/";
+  if(!p){ setProxyStatus("paste your worker URL above","warn"); return; }
+  setProxyStatus("testing…","warn");
+  // Use the /ping endpoint — no target needed, just proves the Worker is up
   try{
-    setProxyStatus("testing…","warn");
-    const r = await fetch(proxied(testTarget),{method:"GET"});
-    if(r.ok||r.status===404||r.status===403){
-      // Any response (even 4xx) proves the proxy is reachable and CORS is working
+    const r = await fetch(`${p}/ping`);
+    if(r.ok){
       setProxyStatus("proxy connected","ok");
     } else {
-      setProxyStatus(`proxy returned HTTP ${r.status}`,"warn");
+      setProxyStatus(`worker returned HTTP ${r.status}`,"warn");
     }
   } catch(e){
-    setProxyStatus("cannot reach proxy — check URL","err");
+    setProxyStatus("cannot reach worker — check URL","err");
   }
 }
 
@@ -319,14 +311,14 @@ function setProxyStatus(msg,cls){
   el.className   = "proxy-status "+cls;
 }
 
-// ─── Env ─────────────────────────────────────────────────────────────────────
+// ─── Env ──────────────────────────────────────────────────────────────────────
 function setEnv(e){
   document.getElementById("root-url").value = ENVS[e];
   document.querySelectorAll(".env-btn").forEach(b=>b.classList.remove("on"));
   document.getElementById("btn-"+e).classList.add("on");
 }
 
-// ─── Servers ─────────────────────────────────────────────────────────────────
+// ─── Servers ──────────────────────────────────────────────────────────────────
 function renderServers(){
   const g = document.getElementById("srv-grid");
   g.innerHTML = "";
@@ -339,12 +331,12 @@ function renderServers(){
   });
 }
 
-// ─── UUIDs ───────────────────────────────────────────────────────────────────
+// ─── UUIDs ────────────────────────────────────────────────────────────────────
 function renderUUIDs(){
   const list = document.getElementById("uuid-list");
   list.innerHTML = "";
   allUUIDs.forEach((u,i)=>{
-    const row  = document.createElement("div");
+    const row = document.createElement("div");
     row.className = "uuid-item"+(u.checked?" on":"");
     const short = u.id.length>36 ? u.id.slice(0,8)+"…"+u.id.slice(-8) : u.id;
     row.innerHTML =
@@ -352,7 +344,9 @@ function renderUUIDs(){
        <span class="uuid-label" title="${u.id}">${short}</span>
        <button onclick="removeUUID(${i},event)"
          style="background:none;border:none;cursor:pointer;color:var(--err-fg);font-size:13px;line-height:1;padding:0">×</button>`;
-    row.onclick = e=>{ if(e.target.tagName!=="BUTTON"&&e.target.tagName!=="INPUT") toggleUUID(i,!u.checked); };
+    row.onclick = e=>{
+      if(e.target.tagName!=="BUTTON"&&e.target.tagName!=="INPUT") toggleUUID(i,!u.checked);
+    };
     list.appendChild(row);
   });
   document.getElementById("uuid-status").textContent =
@@ -374,12 +368,12 @@ async function fetchUUIDs(){
   const root    = document.getElementById("root-url").value.replace(/\/+$/,"");
   const subPath = document.getElementById("sub-path").value;
   const server  = [...activeServers][0]||"processserver-0";
-  const url     = buildURL(root, server, subPath, "");
+  const url     = buildURL(root,server,subPath,"");
   setUUIDStatus("fetching…");
   addLog("fetching UUID list: "+url,"info");
   try{
     const resp = await fetch(proxied(url));
-    if(!resp.ok){ setUUIDStatus("HTTP "+resp.status); addLog("HTTP "+resp.status+" listing UUIDs","err"); return; }
+    if(!resp.ok){ setUUIDStatus("HTTP "+resp.status); addLog("HTTP "+resp.status+" listing","err"); return; }
     const html = await resp.text();
     const doc  = new DOMParser().parseFromString(html,"text/html");
     const RE   = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/?$/i;
@@ -398,9 +392,9 @@ async function fetchUUIDs(){
     addLog("fetch error: "+e.message,"err");
   }
 }
-function setUUIDStatus(m){ document.getElementById("uuid-status").textContent = m; }
+function setUUIDStatus(m){ document.getElementById("uuid-status").textContent=m; }
 
-// ─── Dates ───────────────────────────────────────────────────────────────────
+// ─── Dates ────────────────────────────────────────────────────────────────────
 function onDateKey(e){
   if(e.key!=="Enter") return;
   const v = e.target.value.trim();
@@ -419,7 +413,7 @@ function removeDate(d,e){
   document.getElementById("dtag-"+d)?.remove();
 }
 
-// ─── Log ─────────────────────────────────────────────────────────────────────
+// ─── Log ──────────────────────────────────────────────────────────────────────
 const ICONS={ok:"✓",err:"✗",warn:"!",info:"→",plain:"·"};
 function addLog(msg,kind="plain"){
   const area=document.getElementById("log");
@@ -433,7 +427,7 @@ function addLog(msg,kind="plain"){
 }
 function clearLog(){ document.getElementById("log").innerHTML=""; }
 
-// ─── Stats ───────────────────────────────────────────────────────────────────
+// ─── Stats / Progress ─────────────────────────────────────────────────────────
 function updateStats(){
   document.getElementById("s-files").textContent=stats.files;
   document.getElementById("s-ext").textContent=stats.extracted;
@@ -448,11 +442,11 @@ function setProgress(label,pct){
   document.getElementById("prog-fill").style.width=pct+"%";
 }
 
-// ─── URL helpers ─────────────────────────────────────────────────────────────
+// ─── URL helpers ──────────────────────────────────────────────────────────────
 function buildURL(root,server,subPath,uuid){
-  const r  =root.replace(/\/+$/,"");
-  const sub=subPath.replace(/^\/+/,"").replace(/\/+$/,"");
-  const u  =(uuid||"").replace(/\/+$/,"");
+  const r  = root.replace(/\/+$/,"");
+  const sub= subPath.replace(/^\/+/,"").replace(/\/+$/,"");
+  const u  = (uuid||"").replace(/\/+$/,"");
   return [r,server,sub,u].filter(Boolean).join("/")+"/";
 }
 function resolveHref(baseUrl,href){
@@ -463,17 +457,17 @@ function resolveHref(baseUrl,href){
   return baseUrl.replace(/\/+$/,"")+"/"+href.replace(/^\/+/,"");
 }
 
-// ─── GZ decompression ────────────────────────────────────────────────────────
+// ─── GZ decompress ────────────────────────────────────────────────────────────
 function decompressGZ(buf){
   return new Promise((res,rej)=>{
     try{
-      const inflated=fflate.decompressSync(new Uint8Array(buf));
-      res(new TextDecoder("utf-8",{fatal:false}).decode(inflated));
+      const out=fflate.decompressSync(new Uint8Array(buf));
+      res(new TextDecoder("utf-8",{fatal:false}).decode(out));
     } catch(e){ rej(e); }
   });
 }
 
-// ─── Log sorting ─────────────────────────────────────────────────────────────
+// ─── Log sorting (oldest → newest) ───────────────────────────────────────────
 const TS_PATS=[
   /(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?)/,
   /(\d{2}\/\w{3}\/\d{4}:\d{2}:\d{2}:\d{2})/,
@@ -496,7 +490,10 @@ function parseTS(s){
   return null;
 }
 function extractTS(line){
-  for(const p of TS_PATS){ const m=line.match(p); if(m){ const d=parseTS(m[1]); if(d&&!isNaN(d)) return d; } }
+  for(const p of TS_PATS){
+    const m=line.match(p);
+    if(m){ const d=parseTS(m[1]); if(d&&!isNaN(d)) return d; }
+  }
   return null;
 }
 function sortLogContent(content){
@@ -513,7 +510,7 @@ function sortLogContent(content){
   return entries.map(e=>e.lines.join("\n")).join("\n");
 }
 
-// ─── Download to disk ────────────────────────────────────────────────────────
+// ─── Output / download ────────────────────────────────────────────────────────
 function shouldDownload(href){
   const name=href.split("?")[0];
   return name.endsWith(".gz")&&dates.some(d=>name.includes(d));
@@ -529,9 +526,7 @@ function triggerDownload(filename,content){
 }
 function registerOutput(name,content){
   outputFiles.push({name,content});
-  const section=document.getElementById("dl-section");
-  const list=document.getElementById("dl-list");
-  section.style.display="block";
+  document.getElementById("dl-section").style.display="block";
   const i=outputFiles.length-1;
   const kb=(new Blob([content]).size/1024).toFixed(1);
   const item=document.createElement("div");
@@ -539,8 +534,9 @@ function registerOutput(name,content){
   item.innerHTML=
     `<span class="dl-item-name" title="${name}">${name}</span>
      <span class="dl-item-meta">${kb} KB</span>
-     <button class="dl-btn" onclick="triggerDownload(outputFiles[${i}].name,outputFiles[${i}].content)">download</button>`;
-  list.appendChild(item);
+     <button class="dl-btn"
+       onclick="triggerDownload(outputFiles[${i}].name,outputFiles[${i}].content)">download</button>`;
+  document.getElementById("dl-list").appendChild(item);
 }
 async function downloadAll(){
   if(!outputFiles.length){ alert("No output files yet."); return; }
@@ -555,13 +551,12 @@ async function downloadAll(){
   setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
-// ─── Main run ────────────────────────────────────────────────────────────────
+// ─── Main run ─────────────────────────────────────────────────────────────────
 async function startRun(){
   if(!getProxy()){ alert("Set your Cloudflare Worker URL first."); return; }
   const selectedUUIDs=allUUIDs.filter(u=>u.checked).map(u=>u.id);
   if(!selectedUUIDs.length){ alert("Select at least one UUID."); return; }
   if(!dates.length){ alert("Add at least one target date."); return; }
-  if(![...activeServers].length){ alert("Select at least one server."); return; }
 
   document.getElementById("run-btn").disabled=true;
   document.getElementById("dl-section").style.display="none";
@@ -571,10 +566,10 @@ async function startRun(){
   stats={files:0,extracted:0,skipped:0,errors:0};
   updateStats();
 
-  const root    =document.getElementById("root-url").value.replace(/\/+$/,"");
-  const subPath =document.getElementById("sub-path").value;
-  const minSize =parseInt(document.getElementById("min-size").value)||1;
-  const servers =[...activeServers];
+  const root   =document.getElementById("root-url").value.replace(/\/+$/,"");
+  const subPath=document.getElementById("sub-path").value;
+  const minSize=parseInt(document.getElementById("min-size").value)||1;
+  const servers=[...activeServers];
 
   addLog(`starting — ${selectedUUIDs.length} uuid(s), ${servers.length} server(s), ${dates.length} date(s)`,"info");
   addLog(`root: ${root}`,"plain");
@@ -596,26 +591,30 @@ async function startRun(){
       try{
         const listResp=await fetch(proxied(serverUrl));
         if(!listResp.ok){
-          addLog(`HTTP ${listResp.status} listing ${serverUrl}`,"warn");
-          stats.errors++; updateStats(); step++;
-          setProgress(`${server} / ${uuidName.slice(0,12)}…`,(step/total)*100);
+          addLog(`HTTP ${listResp.status} — ${serverUrl}`,"warn");
+          stats.errors++; updateStats();
+          step++; setProgress(`${server} / ${uuidName.slice(0,12)}…`,(step/total)*100);
           continue;
         }
+
         const html=await listResp.text();
         const doc=new DOMParser().parseFromString(html,"text/html");
         const links=[...doc.querySelectorAll("a[href]")];
-        addLog(`  ${links.length} link(s) in listing`,"plain");
+        addLog(`  ${links.length} link(s)`,"plain");
 
         let serverContent="";
         for(const a of links){
           const href=a.getAttribute("href");
-          if(!shouldDownload(href)){ continue; }
+          if(!shouldDownload(href)) continue;
           const fullUrl=resolveHref(serverUrl,href);
           addLog(`  ↓ ${href}`,"info");
           stats.files++; updateStats();
           try{
             const r=await fetch(proxied(fullUrl));
-            if(!r.ok){ addLog(`  HTTP ${r.status} — skipping`,"warn"); stats.skipped++; updateStats(); continue; }
+            if(!r.ok){
+              addLog(`  HTTP ${r.status} — skipping`,"warn");
+              stats.skipped++; updateStats(); continue;
+            }
             const buf=await r.arrayBuffer();
             if(buf.byteLength<minSize){
               addLog(`  too small (${buf.byteLength}B) — skipping`,"warn");
@@ -632,14 +631,14 @@ async function startRun(){
         }
 
         if(serverContent){
-          const sorted=sortLogContent(serverContent);
           const fname=`${uuidName}__${server}__merged.txt`;
-          registerOutput(fname,sorted);
+          registerOutput(fname, sortLogContent(serverContent));
           addLog(`  saved (sorted): ${fname}`,"ok");
           uuidAll.push(serverContent);
         } else {
           addLog(`  no matching files on ${server}`,"warn");
         }
+
       } catch(e){
         addLog(`error on ${server}: ${e.message}`,"err");
         stats.errors++; updateStats();
@@ -650,28 +649,31 @@ async function startRun(){
     }
 
     if(uuidAll.length){
-      const sorted=sortLogContent(uuidAll.join("\n"));
       const fname=`${uuidName}__merged_all_servers.txt`;
-      registerOutput(fname,sorted);
-      addLog(`uuid-level merged (sorted): ${fname}`,"ok");
+      registerOutput(fname, sortLogContent(uuidAll.join("\n")));
+      addLog(`uuid merged (sorted): ${fname}`,"ok");
     }
   }
 
   setProgress("complete",100);
-  addLog(`done — ${stats.files} attempted, ${stats.extracted} extracted, ${stats.skipped} skipped, ${stats.errors} errors`,"info");
+  addLog(
+    `done — ${stats.files} attempted, ${stats.extracted} extracted, `+
+    `${stats.skipped} skipped, ${stats.errors} errors`,
+    "info"
+  );
   document.getElementById("run-btn").disabled=false;
 }
 
-// ─── Init ────────────────────────────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────────────────────────
 renderServers();
 renderUUIDs();
-// Restore proxy URL from localStorage if previously saved
-const savedProxy=localStorage.getItem("logdl_proxy");
-if(savedProxy){ document.getElementById("proxy-url").value=savedProxy; testProxy(); }
+// Restore saved proxy URL
+const saved=localStorage.getItem("logdl_proxy");
+if(saved){ document.getElementById("proxy-url").value=saved; testProxy(); }
 document.getElementById("proxy-url").addEventListener("change",()=>{
-  localStorage.setItem("logdl_proxy", getProxy());
+  localStorage.setItem("logdl_proxy",getProxy());
 });
-addLog("ready — set your Cloudflare Worker URL, then configure and run","info");
+addLog("ready — set worker URL, configure, then run","info");
 </script>
 </body>
 </html>
