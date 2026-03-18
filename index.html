@@ -364,17 +364,28 @@ function setEnv(e){
  * @param {string} url  - full URL to fetch
  * @param {function} filter - (href:string)=>boolean to keep only relevant entries
  */
-async function listDir(url, filter){
+async function listDir(url, filter, debug=false){
   const resp = await fetch(proxied(url));
   if(!resp.ok) throw new Error(`HTTP ${resp.status} from ${url}`);
   const html = await resp.text();
+
+  if(debug){
+    // Log a snippet of the raw HTML so we can see the listing format
+    addLog(`  raw HTML (first 500 chars): ${html.slice(0,500).replace(/\n/g," ")}`,"plain");
+  }
+
   const doc  = new DOMParser().parseFromString(html,"text/html");
   const results = [];
+
   doc.querySelectorAll("a[href]").forEach(a=>{
-    const raw  = a.getAttribute("href");
-    const name = raw.replace(/\/+$/,"").split("/").pop();
+    const raw   = a.getAttribute("href");
+    const clean = raw.split("?")[0].replace(/\/+$/,"");
+    const parts = clean.split("/").filter(Boolean);
+    const name  = parts.length ? parts[parts.length-1] : "";
+    if(debug) addLog(`  href raw="${raw}" → name="${name}"`,"plain");
     if(name && name !== ".." && filter(name)) results.push(name);
   });
+
   return [...new Set(results)].sort();
 }
 
@@ -419,7 +430,16 @@ async function loadTenants(){
   try{
     // Tenants are top-level folders under /{server}/
     const url      = `${getRoot()}/${getServer()}/`;
-    const tenants  = await listDir(url, n => n.length > 0 && !n.includes("."));
+    addLog(`fetching: ${url}`,"plain");
+    // debug=true logs every href so we can see what the server returns
+    const tenants  = await listDir(url, n => {
+      // Accept any folder name that is not a known non-tenant entry
+      // Exclude: parent refs, file extensions, processserver names
+      if(!n || n===".." || n===".") return false;
+      if(/^processserver-\d+$/i.test(n)) return false;
+      if(n.includes(".") && !n.includes("-")) return false; // likely a file
+      return true;
+    }, true);
     populate("sel-tenant", tenants, "select tenant");
     setHint("tenant-hint", `(${tenants.length})`);
     addLog(`found ${tenants.length} tenant(s)`,"ok");
