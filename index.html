@@ -26,81 +26,102 @@
   --ok-fg:#97c459;--warn-fg:#ef9f27;--err-fg:#f09595;
 }}
 body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh}
-.shell{display:grid;grid-template-columns:310px 1fr;min-height:100vh}
+.shell{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
 .sidebar{background:var(--surface);border-right:.5px solid var(--border);
-  padding:1.25rem 1rem;display:flex;flex-direction:column;gap:1.1rem;overflow-y:auto}
+  padding:1.25rem 1rem;display:flex;flex-direction:column;gap:1rem;overflow-y:auto}
 .main{padding:1.25rem;display:flex;flex-direction:column;gap:1rem;overflow-y:auto}
 .app-name{font-size:13px;font-weight:500;padding-bottom:.9rem;
   border-bottom:.5px solid var(--border);color:var(--text)}
 .app-name em{color:var(--text3);font-style:normal}
 .blk-label{font-size:10px;font-weight:500;color:var(--text3);
   text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+
+/* fields */
 .field{display:flex;flex-direction:column;gap:3px}
 .field label{font-size:11px;color:var(--text2)}
 .field input,.field select{font-family:var(--mono);font-size:12px;padding:6px 9px;
   border:.5px solid var(--border-md);border-radius:var(--r);
-  background:var(--surface2);color:var(--text);outline:none;width:100%;transition:border-color .15s}
+  background:var(--surface2);color:var(--text);outline:none;width:100%;
+  transition:border-color .15s}
 .field input:focus,.field select:focus{border-color:var(--accent)}
+.field select:disabled{opacity:.45;cursor:not-allowed}
+.field select option{background:var(--surface)}
+
+/* env toggle */
 .env-row{display:flex;border:.5px solid var(--border-md);border-radius:var(--r);overflow:hidden}
 .env-btn{flex:1;padding:6px 0;font-family:var(--mono);font-size:11px;border:none;
   background:transparent;cursor:pointer;color:var(--text2);
   border-right:.5px solid var(--border);transition:background .12s}
 .env-btn:last-child{border-right:none}
 .env-btn.on{background:var(--surface2);color:var(--text);font-weight:500}
-.tag-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:5px 8px;
+
+/* cascade steps */
+.cascade{display:flex;flex-direction:column;gap:8px}
+.cascade-step{display:flex;flex-direction:column;gap:3px}
+.cascade-step label{font-size:11px;color:var(--text2);display:flex;
+  align-items:center;justify-content:space-between}
+.cascade-step label span{font-size:10px;color:var(--text3)}
+.cascade-select{font-family:var(--mono);font-size:12px;padding:6px 9px;
   border:.5px solid var(--border-md);border-radius:var(--r);
-  background:var(--surface2);min-height:34px;align-items:center;cursor:text}
-.tag-wrap input{border:none;background:transparent;font-family:var(--mono);font-size:12px;
-  outline:none;min-width:80px;flex:1;color:var(--text);padding:0}
-.tag{display:inline-flex;align-items:center;gap:3px;background:var(--info-bg);
-  color:var(--info-fg);font-size:11px;padding:2px 7px;border-radius:5px;white-space:nowrap}
-.tag button{background:none;border:none;cursor:pointer;color:inherit;
-  font-size:13px;line-height:1;padding:0;opacity:.6}
-.tag button:hover{opacity:1}
+  background:var(--surface2);color:var(--text);outline:none;width:100%;
+  transition:border-color .15s;cursor:pointer}
+.cascade-select:focus{border-color:var(--accent)}
+.cascade-select:disabled{opacity:.4;cursor:not-allowed}
+.cascade-select option{background:var(--surface)}
+.cascade-hint{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* date checkboxes */
+.date-list{display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto}
+.date-item{display:flex;align-items:center;gap:7px;padding:5px 8px;
+  border:.5px solid var(--border);border-radius:var(--r);
+  cursor:pointer;font-size:11px;color:var(--text2);transition:background .12s;user-select:none}
+.date-item:hover{background:var(--surface2)}
+.date-item.on{background:var(--info-bg);color:var(--info-fg);border-color:var(--accent)}
+.date-item input[type=checkbox]{accent-color:var(--accent);flex-shrink:0}
+.date-status{font-size:10px;color:var(--text3);margin-top:4px}
+.date-actions{display:flex;gap:5px;margin-top:5px}
+.date-actions button{flex:1;font-family:var(--mono);font-size:10px;padding:4px;
+  border:.5px solid var(--border-md);border-radius:var(--r);
+  background:transparent;color:var(--text2);cursor:pointer;transition:background .12s}
+.date-actions button:hover{background:var(--surface2);color:var(--text)}
+
+/* servers */
 .srv-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .srv{border:.5px solid var(--border);border-radius:var(--r);padding:7px 9px;
-  display:flex;align-items:center;gap:6px;cursor:pointer;transition:background .12s;user-select:none}
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  transition:background .12s;user-select:none}
 .srv:hover{background:var(--surface2)}
 .srv.on{border-color:var(--accent);background:var(--info-bg)}
 .srv .dot{width:6px;height:6px;border-radius:50%;background:var(--border-md);flex-shrink:0}
 .srv.on .dot{background:var(--accent)}
 .srv span{font-size:11px;color:var(--text)}
 .srv.on span{color:var(--info-fg)}
-.uuid-toolbar{display:flex;gap:5px;margin-bottom:6px}
-.uuid-toolbar button{flex:1;font-family:var(--mono);font-size:11px;padding:5px;
-  border:.5px solid var(--border-md);border-radius:var(--r);
-  background:transparent;color:var(--text2);cursor:pointer;transition:background .12s}
-.uuid-toolbar button:hover{background:var(--surface2);color:var(--text)}
-.uuid-toolbar button.primary{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-fg)}
-.uuid-list{display:flex;flex-direction:column;gap:4px;max-height:150px;overflow-y:auto;padding-right:2px}
-.uuid-item{display:flex;align-items:center;gap:7px;padding:5px 8px;
-  border:.5px solid var(--border);border-radius:var(--r);
-  cursor:pointer;font-size:11px;color:var(--text2);transition:background .12s}
-.uuid-item:hover{background:var(--surface2)}
-.uuid-item.on{background:var(--info-bg);color:var(--info-fg);border-color:var(--accent)}
-.uuid-item input[type=checkbox]{accent-color:var(--accent);flex-shrink:0}
-.uuid-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.uuid-status{font-size:10px;color:var(--text3);margin-top:4px}
-.proxy-row{display:flex;flex-direction:column;gap:4px}
-.proxy-row label{font-size:11px;color:var(--text2)}
-.proxy-input-wrap{display:flex;gap:5px}
-.proxy-input-wrap input{flex:1;font-family:var(--mono);font-size:11px;padding:5px 8px;
+
+/* proxy */
+.proxy-wrap{display:flex;flex-direction:column;gap:4px}
+.proxy-wrap label{font-size:11px;color:var(--text2)}
+.proxy-input-row{display:flex;gap:5px}
+.proxy-input-row input{flex:1;font-family:var(--mono);font-size:11px;padding:5px 8px;
   border:.5px solid var(--border-md);border-radius:var(--r);
   background:var(--surface2);color:var(--text);outline:none;transition:border-color .15s}
-.proxy-input-wrap input:focus{border-color:var(--accent)}
+.proxy-input-row input:focus{border-color:var(--accent)}
 .proxy-test-btn{font-family:var(--mono);font-size:11px;padding:5px 10px;
   border:.5px solid var(--border-md);border-radius:var(--r);
-  background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap;transition:background .12s}
+  background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap}
 .proxy-test-btn:hover{background:var(--surface2)}
-.proxy-status{font-size:10px;margin-top:3px}
+.proxy-status{font-size:10px}
 .proxy-status.ok{color:var(--ok-fg)}
 .proxy-status.err{color:var(--err-fg)}
 .proxy-status.warn{color:var(--warn-fg)}
+
+/* run */
 .run-btn{width:100%;padding:10px;border-radius:var(--r);border:none;
   background:var(--text);color:var(--bg);font-family:var(--mono);font-size:12px;
   font-weight:500;cursor:pointer;letter-spacing:.05em;transition:opacity .15s;margin-top:auto}
 .run-btn:hover{opacity:.82}
 .run-btn:disabled{opacity:.35;cursor:not-allowed}
+
+/* main panel */
 .card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:1.1rem}
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stat{background:var(--surface2);border-radius:var(--r);padding:11px 13px}
@@ -137,9 +158,13 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 .ll.warn .lm{color:var(--warn-fg)}
 .ll.info .lm{color:var(--info-fg)}
 .ll.plain .lm{color:var(--text2)}
-.log::-webkit-scrollbar,.uuid-list::-webkit-scrollbar{width:4px}
-.log::-webkit-scrollbar-track,.uuid-list::-webkit-scrollbar-track{background:transparent}
-.log::-webkit-scrollbar-thumb,.uuid-list::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:2px}
+.log::-webkit-scrollbar,.date-list::-webkit-scrollbar{width:4px}
+.log::-webkit-scrollbar-track,.date-list::-webkit-scrollbar-track{background:transparent}
+.log::-webkit-scrollbar-thumb,.date-list::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:2px}
+/* spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:10px;height:10px;border:1.5px solid var(--border-md);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
 @media(max-width:680px){
   .shell{grid-template-columns:1fr}
   .sidebar{border-right:none;border-bottom:.5px solid var(--border)}
@@ -157,10 +182,10 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
   <!-- proxy -->
   <div>
     <div class="blk-label">cloudflare proxy</div>
-    <div class="proxy-row">
+    <div class="proxy-wrap">
       <label>worker url</label>
-      <div class="proxy-input-wrap">
-        <input id="proxy-url" placeholder="https://xxx.workers.dev" oninput="onProxyInput()"/>
+      <div class="proxy-input-row">
+        <input id="proxy-url" placeholder="https://xxx.workers.dev" onblur="saveProxy()"/>
         <button class="proxy-test-btn" onclick="testProxy()">test</button>
       </div>
       <div class="proxy-status warn" id="proxy-status">paste your worker URL above</div>
@@ -175,23 +200,62 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
       <button class="env-btn on" id="btn-preprod" onclick="setEnv('preprod')">preprod</button>
       <button class="env-btn" id="btn-PR"      onclick="setEnv('PR')">PR</button>
     </div>
+    <div class="field" style="margin-top:8px">
+      <label>root url</label>
+      <input id="root-url" value="https://files-io-preprod.eus1-n.itemoptix.com/"
+             oninput="resetCascade('tenant')"/>
+    </div>
   </div>
 
-  <!-- paths -->
-  <div style="display:flex;flex-direction:column;gap:9px">
-    <div class="field"><label>root url</label>
-      <input id="root-url" value="https://files-io-preprod.eus1-n.itemoptix.com/"/></div>
-    <div class="field"><label>sub path</label>
-      <input id="sub-path" value=""/></div>
-    <div class="field"><label>min valid size (bytes)</label>
-      <input id="min-size" type="number" value="1" min="0" style="max-width:90px"/></div>
+  <!-- cascade: tenant → store → device → date -->
+  <div>
+    <div class="blk-label">select target</div>
+    <div class="cascade">
+
+      <!-- tenant -->
+      <div class="cascade-step">
+        <label>tenant <span id="tenant-hint"></span></label>
+        <select class="cascade-select" id="sel-tenant" disabled onchange="onTenantChange()">
+          <option value="">— select tenant —</option>
+        </select>
+        <button onclick="loadTenants()" style="margin-top:4px;font-family:var(--mono);
+          font-size:11px;padding:5px;border:.5px solid var(--border-md);
+          border-radius:var(--r);background:transparent;color:var(--text2);
+          cursor:pointer;width:100%;transition:background .12s"
+          onmouseover="this.style.background='var(--surface2)'"
+          onmouseout="this.style.background='transparent'">
+          ↓ load tenants
+        </button>
+      </div>
+
+      <!-- store -->
+      <div class="cascade-step">
+        <label>store <span id="store-hint"></span></label>
+        <select class="cascade-select" id="sel-store" disabled onchange="onStoreChange()">
+          <option value="">— select store —</option>
+        </select>
+      </div>
+
+      <!-- device -->
+      <div class="cascade-step">
+        <label>device / uuid <span id="device-hint"></span></label>
+        <select class="cascade-select" id="sel-device" disabled onchange="onDeviceChange()">
+          <option value="">— select device —</option>
+        </select>
+      </div>
+
+    </div>
   </div>
 
   <!-- dates -->
   <div>
-    <div class="blk-label">target dates</div>
-    <div class="tag-wrap" id="dates-wrap" onclick="document.getElementById('date-in').focus()">
-      <input id="date-in" placeholder="YYYY-MM-DD, press Enter" onkeydown="onDateKey(event)"/>
+    <div class="blk-label">dates <span id="date-hint" style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0"></span></div>
+    <div class="date-list" id="date-list">
+      <div class="date-status" id="date-status">select a device to load dates</div>
+    </div>
+    <div class="date-actions">
+      <button onclick="selectAllDates()">select all</button>
+      <button onclick="clearAllDates()">clear all</button>
     </div>
   </div>
 
@@ -201,15 +265,10 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
     <div class="srv-grid" id="srv-grid"></div>
   </div>
 
-  <!-- uuids -->
-  <div style="flex:1;display:flex;flex-direction:column;gap:6px">
-    <div class="blk-label">device / uuid folders</div>
-    <div class="uuid-toolbar">
-      <button class="primary" onclick="fetchUUIDs()">↓ fetch from url</button>
-      <button onclick="addManualUUID()">+ manual</button>
-    </div>
-    <div class="uuid-list" id="uuid-list"></div>
-    <div class="uuid-status" id="uuid-status">no uuids — fetch or add manually</div>
+  <!-- min size -->
+  <div class="field">
+    <label>min valid size (bytes)</label>
+    <input id="min-size" type="number" value="1" min="0" style="max-width:90px"/>
   </div>
 
   <button class="run-btn" id="run-btn" onclick="startRun()">run &amp; download</button>
@@ -251,7 +310,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
-// ─── Config ───────────────────────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────────
 const ENVS = {
   prod:    "https://files-io-prod.eus1-n.itemoptix.com/",
   preprod: "https://files-io-preprod.eus1-n.itemoptix.com/",
@@ -261,159 +320,277 @@ const DEFAULT_SERVERS = [
   "processserver-0","processserver-1","processserver-2",
   "processserver-3","processserver-4"
 ];
+const UUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
+const DATE_RE = /\b(\d{4}-\d{2}-\d{2})\b/;
 
-// ─── State ────────────────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 let activeServers = new Set(DEFAULT_SERVERS);
-let allUUIDs      = [];
-let dates         = [];
+let selectedDates = new Set();
 let outputFiles   = [];
 let stats         = {files:0,extracted:0,skipped:0,errors:0};
 
-// ─── Proxy ────────────────────────────────────────────────────────────────────
-function getProxy(){
-  return (document.getElementById("proxy-url").value||"").trim().replace(/\/+$/,"");
+// ── Proxy ─────────────────────────────────────────────────────────────────────
+function getProxy(){ return (document.getElementById("proxy-url").value||"").trim().replace(/\/+$/,""); }
+function proxied(url){ const p=getProxy(); return p ? `${p}?url=${encodeURIComponent(url)}` : url; }
+function saveProxy(){ localStorage.setItem("logdl_proxy",getProxy()); }
+function setProxyStatus(msg,cls){
+  const el=document.getElementById("proxy-status");
+  el.textContent=msg; el.className="proxy-status "+cls;
 }
-
-/**
- * Wrap a target URL through the Cloudflare Worker.
- * Uses ?url=<encoded> so Cloudflare never mangles the path.
- */
-function proxied(targetUrl){
-  const p = getProxy();
-  if(!p) return targetUrl;
-  return `${p}?url=${encodeURIComponent(targetUrl)}`;
-}
-
-function onProxyInput(){
-  setProxyStatus("…","warn");
-}
-
 async function testProxy(){
-  const p = getProxy();
+  const p=getProxy();
   if(!p){ setProxyStatus("paste your worker URL above","warn"); return; }
   setProxyStatus("testing…","warn");
-  // Use the /ping endpoint — no target needed, just proves the Worker is up
+  const root=document.getElementById("root-url").value.replace(/\/+$/,"")+"/";
   try{
-    const r = await fetch(`${p}/ping`);
-    if(r.ok){
-      setProxyStatus("proxy connected","ok");
-    } else {
-      setProxyStatus(`worker returned HTTP ${r.status}`,"warn");
-    }
+    const r=await fetch(proxied(root));
+    setProxyStatus(`proxy connected (HTTP ${r.status} from server)`,"ok");
   } catch(e){
     setProxyStatus("cannot reach worker — check URL","err");
   }
 }
 
-function setProxyStatus(msg,cls){
-  const el = document.getElementById("proxy-status");
-  el.textContent = msg;
-  el.className   = "proxy-status "+cls;
-}
-
-// ─── Env ──────────────────────────────────────────────────────────────────────
+// ── Env ───────────────────────────────────────────────────────────────────────
 function setEnv(e){
-  document.getElementById("root-url").value = ENVS[e];
+  document.getElementById("root-url").value=ENVS[e];
   document.querySelectorAll(".env-btn").forEach(b=>b.classList.remove("on"));
   document.getElementById("btn-"+e).classList.add("on");
+  resetCascade("tenant");
 }
 
-// ─── Servers ──────────────────────────────────────────────────────────────────
+// ── Directory listing helper ──────────────────────────────────────────────────
+/**
+ * Fetch a directory listing through the proxy and return all href values.
+ * @param {string} url  - full URL to fetch
+ * @param {function} filter - (href:string)=>boolean to keep only relevant entries
+ */
+async function listDir(url, filter){
+  const resp = await fetch(proxied(url));
+  if(!resp.ok) throw new Error(`HTTP ${resp.status} from ${url}`);
+  const html = await resp.text();
+  const doc  = new DOMParser().parseFromString(html,"text/html");
+  const results = [];
+  doc.querySelectorAll("a[href]").forEach(a=>{
+    const raw  = a.getAttribute("href");
+    const name = raw.replace(/\/+$/,"").split("/").pop();
+    if(name && name !== ".." && filter(name)) results.push(name);
+  });
+  return [...new Set(results)].sort();
+}
+
+function getRoot(){ return document.getElementById("root-url").value.replace(/\/+$/,""); }
+function getServer(){ return [...activeServers][0] || "processserver-0"; }
+
+// ── Cascade reset ─────────────────────────────────────────────────────────────
+function resetCascade(from){
+  const order = ["tenant","store","device","date"];
+  const idx   = order.indexOf(from);
+  order.slice(idx).forEach(level=>{
+    if(level==="date"){ clearDateList(); return; }
+    const sel = document.getElementById("sel-"+level);
+    sel.innerHTML = `<option value="">— select ${level} —</option>`;
+    sel.disabled  = true;
+    document.getElementById(level+"-hint").textContent = "";
+  });
+}
+
+// ── Spinner helper ────────────────────────────────────────────────────────────
+function setHint(id, html){ document.getElementById(id).innerHTML = html; }
+function spinner(){ return '<span class="spin"></span>'; }
+
+// ── Populate a <select> ───────────────────────────────────────────────────────
+function populate(selId, items, placeholder){
+  const sel = document.getElementById(selId);
+  sel.innerHTML = `<option value="">— ${placeholder} —</option>`;
+  items.forEach(item=>{
+    const o = document.createElement("option");
+    o.value = item; o.textContent = item;
+    sel.appendChild(o);
+  });
+  sel.disabled = items.length === 0;
+}
+
+// ── Load tenants ──────────────────────────────────────────────────────────────
+async function loadTenants(){
+  if(!getProxy()){ alert("Set your Cloudflare Worker URL first."); return; }
+  resetCascade("tenant");
+  setHint("tenant-hint", spinner());
+  addLog("loading tenants…","info");
+  try{
+    // Tenants are top-level folders under /{server}/
+    const url      = `${getRoot()}/${getServer()}/`;
+    const tenants  = await listDir(url, n => n.length > 0 && !n.includes("."));
+    populate("sel-tenant", tenants, "select tenant");
+    setHint("tenant-hint", `(${tenants.length})`);
+    addLog(`found ${tenants.length} tenant(s)`,"ok");
+  } catch(e){
+    setHint("tenant-hint","err");
+    addLog("failed to load tenants: "+e.message,"err");
+  }
+}
+
+// ── Tenant selected → load stores ────────────────────────────────────────────
+async function onTenantChange(){
+  resetCascade("store");
+  const tenant = document.getElementById("sel-tenant").value;
+  if(!tenant) return;
+  setHint("store-hint", spinner());
+  addLog(`loading stores for ${tenant}…`,"info");
+  try{
+    const url    = `${getRoot()}/${getServer()}/${tenant}/`;
+    const stores = await listDir(url, n => n.length > 0 && !n.includes("."));
+    populate("sel-store", stores, "select store");
+    setHint("store-hint", `(${stores.length})`);
+    addLog(`found ${stores.length} store(s)`,"ok");
+  } catch(e){
+    setHint("store-hint","err");
+    addLog("failed to load stores: "+e.message,"err");
+  }
+}
+
+// ── Store selected → load devices ─────────────────────────────────────────────
+async function onStoreChange(){
+  resetCascade("device");
+  const tenant = document.getElementById("sel-tenant").value;
+  const store  = document.getElementById("sel-store").value;
+  if(!store) return;
+  setHint("device-hint", spinner());
+  addLog(`loading devices for ${tenant}/${store}…`,"info");
+  try{
+    const url     = `${getRoot()}/${getServer()}/${tenant}/${store}/`;
+    const devices = await listDir(url, n => UUID_RE.test(n));
+    populate("sel-device", devices, "select device");
+    setHint("device-hint", `(${devices.length})`);
+    addLog(`found ${devices.length} device(s)`,"ok");
+  } catch(e){
+    setHint("device-hint","err");
+    addLog("failed to load devices: "+e.message,"err");
+  }
+}
+
+// ── Device selected → load dates ──────────────────────────────────────────────
+async function onDeviceChange(){
+  clearDateList();
+  const tenant = document.getElementById("sel-tenant").value;
+  const store  = document.getElementById("sel-store").value;
+  const device = document.getElementById("sel-device").value;
+  if(!device) return;
+
+  setDateStatus(spinner()+" loading dates…");
+  addLog(`loading available dates for device ${device.slice(0,8)}…`,"info");
+
+  try{
+    // Scan all selected servers to collect all available .gz dates
+    const dateSet = new Set();
+    const servers = [...activeServers];
+
+    for(const server of servers){
+      const url = `${getRoot()}/${server}/${tenant}/${store}/${device}/`;
+      try{
+        const files = await listDir(url, n => n.endsWith(".gz"));
+        files.forEach(f=>{
+          const m = f.match(DATE_RE);
+          if(m) dateSet.add(m[1]);
+        });
+      } catch(e){
+        // Server might not have this device — that's fine, keep going
+        addLog(`  ${server}: ${e.message}`,"plain");
+      }
+    }
+
+    const dates = [...dateSet].sort().reverse(); // newest first
+    renderDateList(dates);
+    setDateHint(`(${dates.length} date${dates.length!==1?"s":""})`);
+    addLog(`found ${dates.length} available date(s)`,"ok");
+
+  } catch(e){
+    setDateStatus("error loading dates: "+e.message);
+    addLog("failed to load dates: "+e.message,"err");
+  }
+}
+
+// ── Date list rendering ────────────────────────────────────────────────────────
+function renderDateList(dates){
+  const list = document.getElementById("date-list");
+  list.innerHTML = "";
+  selectedDates = new Set();
+
+  if(!dates.length){
+    list.innerHTML = `<div class="date-status">no .gz files found for this device</div>`;
+    return;
+  }
+
+  dates.forEach(d=>{
+    const item = document.createElement("div");
+    item.className = "date-item";
+    item.id = "ditem-"+d;
+    item.innerHTML =
+      `<input type="checkbox" id="dchk-${d}" onchange="toggleDate('${d}',this.checked)"/>
+       <label for="dchk-${d}" style="flex:1;cursor:pointer">${d}</label>`;
+    item.onclick = e=>{
+      if(e.target.tagName==="INPUT") return;
+      const chk=document.getElementById("dchk-"+d);
+      chk.checked=!chk.checked;
+      toggleDate(d,chk.checked);
+    };
+    list.appendChild(item);
+  });
+  updateDateStatus();
+}
+
+function toggleDate(d,checked){
+  checked ? selectedDates.add(d) : selectedDates.delete(d);
+  const item=document.getElementById("ditem-"+d);
+  if(item) item.className="date-item"+(checked?" on":"");
+  updateDateStatus();
+}
+
+function selectAllDates(){
+  document.querySelectorAll("[id^='dchk-']").forEach(chk=>{
+    chk.checked=true;
+    toggleDate(chk.id.replace("dchk-",""),true);
+  });
+}
+function clearAllDates(){
+  document.querySelectorAll("[id^='dchk-']").forEach(chk=>{
+    chk.checked=false;
+    toggleDate(chk.id.replace("dchk-",""),false);
+  });
+}
+function clearDateList(){
+  document.getElementById("date-list").innerHTML=
+    `<div class="date-status">select a device to load dates</div>`;
+  selectedDates=new Set();
+  setDateHint("");
+}
+function setDateStatus(html){
+  document.getElementById("date-list").innerHTML=`<div class="date-status">${html}</div>`;
+}
+function setDateHint(txt){ document.getElementById("date-hint").textContent=txt; }
+function updateDateStatus(){
+  const total=document.querySelectorAll("[id^='dchk-']").length;
+  setDateHint(`(${selectedDates.size}/${total} selected)`);
+}
+
+// ── Servers ───────────────────────────────────────────────────────────────────
 function renderServers(){
-  const g = document.getElementById("srv-grid");
-  g.innerHTML = "";
+  const g=document.getElementById("srv-grid");
+  g.innerHTML="";
   DEFAULT_SERVERS.forEach(s=>{
-    const d = document.createElement("div");
-    d.className = "srv"+(activeServers.has(s)?" on":"");
-    d.innerHTML = `<div class="dot"></div><span>${s}</span>`;
-    d.onclick = ()=>{ activeServers.has(s)?activeServers.delete(s):activeServers.add(s); renderServers(); };
+    const d=document.createElement("div");
+    d.className="srv"+(activeServers.has(s)?" on":"");
+    d.innerHTML=`<div class="dot"></div><span>${s}</span>`;
+    d.onclick=()=>{
+      activeServers.has(s)?activeServers.delete(s):activeServers.add(s);
+      renderServers();
+      // Re-load dates when server selection changes
+      if(document.getElementById("sel-device").value) onDeviceChange();
+    };
     g.appendChild(d);
   });
 }
 
-// ─── UUIDs ────────────────────────────────────────────────────────────────────
-function renderUUIDs(){
-  const list = document.getElementById("uuid-list");
-  list.innerHTML = "";
-  allUUIDs.forEach((u,i)=>{
-    const row = document.createElement("div");
-    row.className = "uuid-item"+(u.checked?" on":"");
-    const short = u.id.length>36 ? u.id.slice(0,8)+"…"+u.id.slice(-8) : u.id;
-    row.innerHTML =
-      `<input type="checkbox" ${u.checked?"checked":""} onchange="toggleUUID(${i},this.checked)"/>
-       <span class="uuid-label" title="${u.id}">${short}</span>
-       <button onclick="removeUUID(${i},event)"
-         style="background:none;border:none;cursor:pointer;color:var(--err-fg);font-size:13px;line-height:1;padding:0">×</button>`;
-    row.onclick = e=>{
-      if(e.target.tagName!=="BUTTON"&&e.target.tagName!=="INPUT") toggleUUID(i,!u.checked);
-    };
-    list.appendChild(row);
-  });
-  document.getElementById("uuid-status").textContent =
-    allUUIDs.length
-      ? `${allUUIDs.filter(u=>u.checked).length} / ${allUUIDs.length} selected`
-      : "no uuids — fetch or add manually";
-}
-function toggleUUID(i,v){ allUUIDs[i].checked=v; renderUUIDs(); }
-function removeUUID(i,e){ e.stopPropagation(); allUUIDs.splice(i,1); renderUUIDs(); }
-function addManualUUID(){
-  const v = prompt("Paste UUID (with or without trailing /):");
-  if(!v) return;
-  const id = v.trim().replace(/\/+$/,"")+"/";
-  if(!allUUIDs.find(u=>u.id===id)){ allUUIDs.push({id,checked:true}); renderUUIDs(); }
-}
-
-async function fetchUUIDs(){
-  if(!getProxy()){ alert("Set your Cloudflare Worker URL first."); return; }
-  const root    = document.getElementById("root-url").value.replace(/\/+$/,"");
-  const subPath = document.getElementById("sub-path").value;
-  const server  = [...activeServers][0]||"processserver-0";
-  const url     = buildURL(root,server,subPath,"");
-  setUUIDStatus("fetching…");
-  addLog("fetching UUID list: "+url,"info");
-  try{
-    const resp = await fetch(proxied(url));
-    if(!resp.ok){ setUUIDStatus("HTTP "+resp.status); addLog("HTTP "+resp.status+" listing","err"); return; }
-    const html = await resp.text();
-    const doc  = new DOMParser().parseFromString(html,"text/html");
-    const RE   = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/?$/i;
-    let found  = 0;
-    doc.querySelectorAll("a[href]").forEach(a=>{
-      const bare = a.getAttribute("href").replace(/\/+$/,"").split("/").pop();
-      if(RE.test(bare)){
-        const id = bare+"/";
-        if(!allUUIDs.find(u=>u.id===id)){ allUUIDs.push({id,checked:true}); found++; }
-      }
-    });
-    renderUUIDs();
-    addLog(`found ${found} new uuid(s)`, found?"ok":"warn");
-  } catch(e){
-    setUUIDStatus("fetch error — check proxy");
-    addLog("fetch error: "+e.message,"err");
-  }
-}
-function setUUIDStatus(m){ document.getElementById("uuid-status").textContent=m; }
-
-// ─── Dates ────────────────────────────────────────────────────────────────────
-function onDateKey(e){
-  if(e.key!=="Enter") return;
-  const v = e.target.value.trim();
-  if(v&&!dates.includes(v)){
-    dates.push(v);
-    const tag = document.createElement("div");
-    tag.className="tag"; tag.id="dtag-"+v;
-    tag.innerHTML=`${v} <button onclick="removeDate('${v}',event)">×</button>`;
-    document.getElementById("dates-wrap").insertBefore(tag,e.target);
-  }
-  e.target.value="";
-}
-function removeDate(d,e){
-  e.stopPropagation();
-  dates=dates.filter(x=>x!==d);
-  document.getElementById("dtag-"+d)?.remove();
-}
-
-// ─── Log ──────────────────────────────────────────────────────────────────────
+// ── Log ───────────────────────────────────────────────────────────────────────
 const ICONS={ok:"✓",err:"✗",warn:"!",info:"→",plain:"·"};
 function addLog(msg,kind="plain"){
   const area=document.getElementById("log");
@@ -427,7 +604,7 @@ function addLog(msg,kind="plain"){
 }
 function clearLog(){ document.getElementById("log").innerHTML=""; }
 
-// ─── Stats / Progress ─────────────────────────────────────────────────────────
+// ── Stats / Progress ──────────────────────────────────────────────────────────
 function updateStats(){
   document.getElementById("s-files").textContent=stats.files;
   document.getElementById("s-ext").textContent=stats.extracted;
@@ -442,13 +619,7 @@ function setProgress(label,pct){
   document.getElementById("prog-fill").style.width=pct+"%";
 }
 
-// ─── URL helpers ──────────────────────────────────────────────────────────────
-function buildURL(root,server,subPath,uuid){
-  const r  = root.replace(/\/+$/,"");
-  const sub= subPath.replace(/^\/+/,"").replace(/\/+$/,"");
-  const u  = (uuid||"").replace(/\/+$/,"");
-  return [r,server,sub,u].filter(Boolean).join("/")+"/";
-}
+// ── URL helpers ───────────────────────────────────────────────────────────────
 function resolveHref(baseUrl,href){
   if(/^https?:\/\//i.test(href)) return href;
   if(href.startsWith("/")){
@@ -457,7 +628,7 @@ function resolveHref(baseUrl,href){
   return baseUrl.replace(/\/+$/,"")+"/"+href.replace(/^\/+/,"");
 }
 
-// ─── GZ decompress ────────────────────────────────────────────────────────────
+// ── GZ decompress ─────────────────────────────────────────────────────────────
 function decompressGZ(buf){
   return new Promise((res,rej)=>{
     try{
@@ -467,7 +638,7 @@ function decompressGZ(buf){
   });
 }
 
-// ─── Log sorting (oldest → newest) ───────────────────────────────────────────
+// ── Log sorting (oldest → newest) ─────────────────────────────────────────────
 const TS_PATS=[
   /(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?)/,
   /(\d{2}\/\w{3}\/\d{4}:\d{2}:\d{2}:\d{2})/,
@@ -510,10 +681,10 @@ function sortLogContent(content){
   return entries.map(e=>e.lines.join("\n")).join("\n");
 }
 
-// ─── Output / download ────────────────────────────────────────────────────────
-function shouldDownload(href){
+// ── Output / download ─────────────────────────────────────────────────────────
+function shouldDownload(href, dates){
   const name=href.split("?")[0];
-  return name.endsWith(".gz")&&dates.some(d=>name.includes(d));
+  return name.endsWith(".gz") && dates.some(d=>name.includes(d));
 }
 function triggerDownload(filename,content){
   const blob=new Blob([content],{type:"text/plain;charset=utf-8"});
@@ -551,12 +722,19 @@ async function downloadAll(){
   setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 
-// ─── Main run ─────────────────────────────────────────────────────────────────
+// ── Main run ──────────────────────────────────────────────────────────────────
 async function startRun(){
   if(!getProxy()){ alert("Set your Cloudflare Worker URL first."); return; }
-  const selectedUUIDs=allUUIDs.filter(u=>u.checked).map(u=>u.id);
-  if(!selectedUUIDs.length){ alert("Select at least one UUID."); return; }
-  if(!dates.length){ alert("Add at least one target date."); return; }
+
+  const tenant = document.getElementById("sel-tenant").value;
+  const store  = document.getElementById("sel-store").value;
+  const device = document.getElementById("sel-device").value;
+  const dates  = [...selectedDates];
+
+  if(!tenant){ alert("Select a tenant."); return; }
+  if(!store) { alert("Select a store."); return; }
+  if(!device){ alert("Select a device."); return; }
+  if(!dates.length){ alert("Select at least one date."); return; }
 
   document.getElementById("run-btn").disabled=true;
   document.getElementById("dl-section").style.display="none";
@@ -566,114 +744,98 @@ async function startRun(){
   stats={files:0,extracted:0,skipped:0,errors:0};
   updateStats();
 
-  const root   =document.getElementById("root-url").value.replace(/\/+$/,"");
-  const subPath=document.getElementById("sub-path").value;
-  const minSize=parseInt(document.getElementById("min-size").value)||1;
-  const servers=[...activeServers];
+  const root    = getRoot();
+  const minSize = parseInt(document.getElementById("min-size").value)||1;
+  const servers = [...activeServers];
 
-  addLog(`starting — ${selectedUUIDs.length} uuid(s), ${servers.length} server(s), ${dates.length} date(s)`,"info");
-  addLog(`root: ${root}`,"plain");
-  addLog(`proxy: ${getProxy()}`,"plain");
+  addLog(`starting — ${tenant}/${store}/${device.slice(0,8)}…`,"info");
+  addLog(`dates: ${dates.join(", ")}`,"info");
+  addLog(`servers: ${servers.join(", ")}`,"plain");
   addLog("sorted oldest → newest on save","info");
 
-  const total=selectedUUIDs.length*servers.length;
+  const total=servers.length;
   let step=0;
+  const allServerContent=[];
 
-  for(const uuid of selectedUUIDs){
-    const uuidName=uuid.replace(/\/+$/,"");
-    addLog(`── uuid: ${uuidName}`,"info");
-    const uuidAll=[];
+  for(const server of servers){
+    const serverUrl=`${root}/${server}/${tenant}/${store}/${device}/`;
+    addLog(`listing ${serverUrl}`,"plain");
 
-    for(const server of servers){
-      const serverUrl=buildURL(root,server,subPath,uuidName);
-      addLog(`listing ${serverUrl}`,"plain");
-
-      try{
-        const listResp=await fetch(proxied(serverUrl));
-        if(!listResp.ok){
-          addLog(`HTTP ${listResp.status} — ${serverUrl}`,"warn");
-          stats.errors++; updateStats();
-          step++; setProgress(`${server} / ${uuidName.slice(0,12)}…`,(step/total)*100);
-          continue;
-        }
-
-        const html=await listResp.text();
-        const doc=new DOMParser().parseFromString(html,"text/html");
-        const links=[...doc.querySelectorAll("a[href]")];
-        addLog(`  ${links.length} link(s)`,"plain");
-
-        let serverContent="";
-        for(const a of links){
-          const href=a.getAttribute("href");
-          if(!shouldDownload(href)) continue;
-          const fullUrl=resolveHref(serverUrl,href);
-          addLog(`  ↓ ${href}`,"info");
-          stats.files++; updateStats();
-          try{
-            const r=await fetch(proxied(fullUrl));
-            if(!r.ok){
-              addLog(`  HTTP ${r.status} — skipping`,"warn");
-              stats.skipped++; updateStats(); continue;
-            }
-            const buf=await r.arrayBuffer();
-            if(buf.byteLength<minSize){
-              addLog(`  too small (${buf.byteLength}B) — skipping`,"warn");
-              stats.skipped++; updateStats(); continue;
-            }
-            const text=await decompressGZ(buf);
-            addLog(`  extracted ${text.length} chars`,"plain");
-            serverContent+=text+"\n";
-            stats.extracted++; updateStats();
-          } catch(fe){
-            addLog(`  error: ${fe.message}`,"err");
-            stats.errors++; updateStats();
-          }
-        }
-
-        if(serverContent){
-          const fname=`${uuidName}__${server}__merged.txt`;
-          registerOutput(fname, sortLogContent(serverContent));
-          addLog(`  saved (sorted): ${fname}`,"ok");
-          uuidAll.push(serverContent);
-        } else {
-          addLog(`  no matching files on ${server}`,"warn");
-        }
-
-      } catch(e){
-        addLog(`error on ${server}: ${e.message}`,"err");
+    try{
+      const listResp=await fetch(proxied(serverUrl));
+      if(!listResp.ok){
+        addLog(`HTTP ${listResp.status} — ${server}`,"warn");
         stats.errors++; updateStats();
+        step++; setProgress(server,(step/total)*100);
+        continue;
       }
 
-      step++;
-      setProgress(`${server} / ${uuidName.slice(0,12)}…`,(step/total)*100);
+      const html=await listResp.text();
+      const doc=new DOMParser().parseFromString(html,"text/html");
+      const links=[...doc.querySelectorAll("a[href]")];
+      addLog(`  ${links.length} link(s) on ${server}`,"plain");
+
+      let serverContent="";
+      for(const a of links){
+        const href=a.getAttribute("href");
+        if(!shouldDownload(href,dates)) continue;
+        const fullUrl=resolveHref(serverUrl,href);
+        addLog(`  ↓ ${href}`,"info");
+        stats.files++; updateStats();
+        try{
+          const r=await fetch(proxied(fullUrl));
+          if(!r.ok){ addLog(`  HTTP ${r.status} — skipping`,"warn"); stats.skipped++; updateStats(); continue; }
+          const buf=await r.arrayBuffer();
+          if(buf.byteLength<minSize){
+            addLog(`  too small (${buf.byteLength}B) — skipping`,"warn");
+            stats.skipped++; updateStats(); continue;
+          }
+          const text=await decompressGZ(buf);
+          addLog(`  extracted ${text.length} chars`,"plain");
+          serverContent+=text+"\n";
+          stats.extracted++; updateStats();
+        } catch(fe){
+          addLog(`  error: ${fe.message}`,"err");
+          stats.errors++; updateStats();
+        }
+      }
+
+      if(serverContent){
+        const fname=`${device}__${server}__merged.txt`;
+        registerOutput(fname, sortLogContent(serverContent));
+        addLog(`  saved (sorted): ${fname}`,"ok");
+        allServerContent.push(serverContent);
+      } else {
+        addLog(`  no matching files on ${server}`,"warn");
+      }
+
+    } catch(e){
+      addLog(`error on ${server}: ${e.message}`,"err");
+      stats.errors++; updateStats();
     }
 
-    if(uuidAll.length){
-      const fname=`${uuidName}__merged_all_servers.txt`;
-      registerOutput(fname, sortLogContent(uuidAll.join("\n")));
-      addLog(`uuid merged (sorted): ${fname}`,"ok");
-    }
+    step++;
+    setProgress(server,(step/total)*100);
+  }
+
+  // Combined file across all servers
+  if(allServerContent.length){
+    const fname=`${device}__merged_all_servers.txt`;
+    registerOutput(fname, sortLogContent(allServerContent.join("\n")));
+    addLog(`all-server merged (sorted): ${fname}`,"ok");
   }
 
   setProgress("complete",100);
-  addLog(
-    `done — ${stats.files} attempted, ${stats.extracted} extracted, `+
-    `${stats.skipped} skipped, ${stats.errors} errors`,
-    "info"
-  );
+  addLog(`done — ${stats.files} attempted, ${stats.extracted} extracted, `+
+         `${stats.skipped} skipped, ${stats.errors} errors`,"info");
   document.getElementById("run-btn").disabled=false;
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 renderServers();
-renderUUIDs();
-// Restore saved proxy URL
 const saved=localStorage.getItem("logdl_proxy");
-if(saved){ document.getElementById("proxy-url").value=saved; testProxy(); }
-document.getElementById("proxy-url").addEventListener("change",()=>{
-  localStorage.setItem("logdl_proxy",getProxy());
-});
-addLog("ready — set worker URL, configure, then run","info");
+if(saved) document.getElementById("proxy-url").value=saved;
+addLog("ready — set worker URL, load tenants, then select target and run","info");
 </script>
 </body>
 </html>
