@@ -331,7 +331,11 @@ let stats         = {files:0,extracted:0,skipped:0,errors:0};
 
 // ── Proxy ─────────────────────────────────────────────────────────────────────
 function getProxy(){ return (document.getElementById("proxy-url").value||"").trim().replace(/\/+$/,""); }
-function proxied(url){ const p=getProxy(); return p ? `${p}?url=${encodeURIComponent(url)}` : url; }
+function proxied(url){
+  const p=getProxy();
+  if(!p) throw new Error("No proxy URL set — paste your Cloudflare Worker URL first");
+  return `${p}?url=${encodeURIComponent(url)}`;
+}
 function saveProxy(){ localStorage.setItem("logdl_proxy",getProxy()); }
 function setProxyStatus(msg,cls){
   const el=document.getElementById("proxy-status");
@@ -430,7 +434,8 @@ async function loadTenants(){
   try{
     // Tenants are top-level folders under /{server}/
     const url      = `${getRoot()}/${getServer()}/`;
-    addLog(`fetching: ${url}`,"plain");
+    const proxiedUrl = proxied(url);
+    addLog(`fetching via proxy: ${proxiedUrl.slice(0,120)}…`,"plain");
     // debug=true logs every href so we can see what the server returns
     const tenants  = await listDir(url, n => {
       // Accept any folder name that is not a known non-tenant entry
