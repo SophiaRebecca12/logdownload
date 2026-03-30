@@ -192,6 +192,19 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
     </div>
   </div>
 
+  <!-- bearer token -->
+  <div>
+    <div class="blk-label">auth</div>
+    <div class="proxy-wrap">
+      <label>bearer token</label>
+      <div class="proxy-input-row">
+        <input id="bearer-token" type="password" placeholder="paste token here…" autocomplete="off"/>
+        <button class="proxy-test-btn" onclick="document.getElementById('bearer-token').type=document.getElementById('bearer-token').type==='password'?'text':'password'">show</button>
+      </div>
+      <div class="proxy-status plain" style="color:var(--text3)">token sent per-request, never stored</div>
+    </div>
+  </div>
+
   <!-- environment -->
   <div>
     <div class="blk-label">environment</div>
@@ -333,11 +346,13 @@ let stats         = {files:0,extracted:0,skipped:0,errors:0};
 
 // ── Proxy ─────────────────────────────────────────────────────────────────────
 function getProxy(){ return (document.getElementById("proxy-url").value||"").trim().replace(/\/+$/,""); }
+function getToken(){ return (document.getElementById("bearer-token").value||"").trim(); }
 function proxied(url){
   const p=getProxy();
   if(!p) throw new Error("No proxy URL set — paste your Cloudflare Worker URL first");
-  // Decode first to avoid double-encoding already-encoded characters (e.g. %20 → %2520)
-  return `${p}?url=${encodeURIComponent(decodeURI(url))}`;
+  const t=getToken();
+  const base=`${p}?url=${encodeURIComponent(decodeURI(url))}`;
+  return t ? base+`&token=${encodeURIComponent(t)}` : base;
 }
 function saveProxy(){ localStorage.setItem("logdl_proxy",getProxy()); }
 function setProxyStatus(msg,cls){
