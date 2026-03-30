@@ -311,7 +311,6 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 // ── Constants ─────────────────────────────────────────────────────────────────
 const ENVS = {
@@ -384,13 +383,8 @@ function setEnv(e){
  */
 async function listDir(url, filter, debug=false){
   const resp = await fetch(proxied(url));
-  if(!resp.ok) throw new Error(`HTTP ${resp.status} from ${url}`);
+  if(!resp.ok) throw new Error(`HTTP ${resp.status} — ${(await resp.text()).slice(0,120)}`);
   const html = await resp.text();
-
-  // Guard: worker returned an error string (e.g. invalid URL, host not allowed)
-  if(!resp.ok){
-    throw new Error(`HTTP ${resp.status} — ${html.slice(0,120)}`);
-  }
 
   if(debug){
     addLog(`· response: ${html.length} chars, HTTP ${resp.status}`,"plain");
@@ -743,7 +737,7 @@ function triggerDownload(filename,content){
   a.href=url; a.download=filename;
   document.body.appendChild(a); a.click();
   document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
 }
 function registerOutput(name,content){
   outputFiles.push({name,content});
@@ -761,15 +755,18 @@ function registerOutput(name,content){
 }
 async function downloadAll(){
   if(!outputFiles.length){ alert("No output files yet."); return; }
-  const zip=new JSZip();
-  outputFiles.forEach(f=>zip.file(f.name,f.content));
-  const blob=await zip.generateAsync({type:"blob"});
+  const zipEntries={};
+  outputFiles.forEach(f=>{
+    zipEntries[f.name]=new TextEncoder().encode(f.content);
+  });
+  const zipped=fflate.zipSync(zipEntries,{level:6});
+  const blob=new Blob([zipped],{type:"application/zip"});
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
   a.href=url; a.download="logs.zip";
   document.body.appendChild(a); a.click();
   document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
 }
 
 // ── Main run ──────────────────────────────────────────────────────────────────
