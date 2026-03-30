@@ -212,7 +212,10 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
       <button class="env-btn" id="btn-prod"    onclick="setEnv('prod')">prod</button>
       <button class="env-btn on" id="btn-preprod" onclick="setEnv('preprod')">preprod</button>
       <button class="env-btn" id="btn-PR"      onclick="setEnv('PR')">PR</button>
+       <button class="env-btn" id="btn-tunnel"  onclick="setEnv('tunnel')">Tunnel</button>
+
     </div>
+    
     <div class="field" style="margin-top:8px">
       <label>root url</label>
       <input id="root-url" value="https://files-io-preprod.eus1-n.itemoptix.com/"
@@ -329,7 +332,8 @@ body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:1
 const ENVS = {
   prod:    "https://files-io-prod.eus1-n.itemoptix.com/",
   preprod: "https://files-io-preprod.eus1-n.itemoptix.com/",
-  PR:      "https://files-io-pr.eus1-n.itemoptix.com/"
+  PR:      "https://files-io-pr.eus1-n.itemoptix.com/",
+  tunnel: "http://diana-netscape-tips-infinite.trycloudflare.com/",
 };
 const DEFAULT_SERVERS = [
   "processserver-0","processserver-1","processserver-2",
